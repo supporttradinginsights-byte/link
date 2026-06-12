@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trading Insights — Opening App...</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0a0f1e;
+      color: #ffffff;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 20px;
+    }
+    .card {
+      background: #111827;
+      border: 1px solid #1e3a5f;
+      border-radius: 16px;
+      padding: 40px 32px;
+      max-width: 380px;
+      width: 100%;
+    }
+    .logo {
+      width: 72px;
+      height: 72px;
+      background: linear-gradient(135deg, #1d8cf8, #3358f4);
+      border-radius: 16px;
+      margin: 0 auto 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+    }
+    h1 { font-size: 22px; font-weight: 700; margin-bottom: 10px; }
+    p  { color: #94a3b8; font-size: 14px; line-height: 1.6; margin-bottom: 24px; }
+    .btn {
+      display: inline-block;
+      background: linear-gradient(135deg, #1d8cf8, #3358f4);
+      color: #fff;
+      text-decoration: none;
+      padding: 14px 28px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 15px;
+      transition: opacity .2s;
+    }
+    .btn:hover { opacity: .85; }
+    .spinner {
+      width: 24px; height: 24px;
+      border: 3px solid #1e3a5f;
+      border-top-color: #1d8cf8;
+      border-radius: 50%;
+      animation: spin .8s linear infinite;
+      margin: 0 auto 16px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .ref-badge {
+      display: inline-block;
+      background: #0d2137;
+      border: 1px solid #1e3a5f;
+      border-radius: 6px;
+      padding: 4px 12px;
+      font-size: 12px;
+      color: #64b5f6;
+      margin-bottom: 20px;
+      font-family: monospace;
+      letter-spacing: 1px;
+    }
+  </style>
+</head>
+<body>
+  <div class="card" id="card">
+    <div class="logo">📈</div>
+    <div class="spinner"></div>
+    <h1>Redirecting...</h1>
+    <p>Please wait while we open the app or redirect you to the Play Store.</p>
+  </div>
+
+  <script>
+    // ─── CONFIG ─────────────────────────────────────────────────────────────────
+    // ⚠️  YAHAN APNA PACKAGE NAME DAALEIN
+    var PACKAGE_NAME = 'com.premium.trading_insights.signals';
+    // ─────────────────────────────────────────────────────────────────────────────
+
+    (function () {
+      var path  = window.location.pathname;   // e.g. /repo-name/r/ABC123
+      var parts = path.split('/');
+
+      // Find "r" segment and grab code after it
+      // Works with or without a sub-path prefix (GitHub Pages repo name)
+      var rIdx  = parts.indexOf('r');
+      var code  = (rIdx >= 0 && parts[rIdx + 1]) ? parts[rIdx + 1].toUpperCase() : '';
+
+      // Validate: only A-Z 0-9, length 6-12 (same as backend)
+      var valid = /^[A-Z0-9]{6,12}$/.test(code);
+
+      if (valid) {
+        // Show referral badge
+        var badge = document.createElement('div');
+        badge.className = 'ref-badge';
+        badge.textContent = 'Referral: ' + code;
+        document.querySelector('p').insertAdjacentElement('beforebegin', badge);
+      }
+
+      // Build Play Store URL
+      var storeUrl = valid
+        ? 'https://play.google.com/store/apps/details?id=' +
+          encodeURIComponent(PACKAGE_NAME) +
+          '&referrer=' + encodeURIComponent('ref=' + code)
+        : 'https://play.google.com/store/apps/details?id=' +
+          encodeURIComponent(PACKAGE_NAME);
+
+      // Auto-redirect after 800ms (gives user time to see the page)
+      setTimeout(function () {
+        document.getElementById('card').innerHTML =
+          '<div class="logo">📈</div>' +
+          (valid ? '<div class="ref-badge">Referral: ' + code + '</div>' : '') +
+          '<h1>Opening Play Store</h1>' +
+          '<p>Tap the button below if you are not redirected automatically.</p>' +
+          '<a class="btn" href="' + storeUrl + '">Open Play Store</a>';
+        window.location.href = storeUrl;
+      }, 800);
+    })();
+  </script>
+</body>
+</html>
