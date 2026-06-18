@@ -1,92 +1,132 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Trading Insights — Download</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Trading Insights — Download App</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg:#0a0e1a; --surface:#111827; --border:#1f2937;
+      --accent:#f59e0b; --text:#e5e7eb; --heading:#f9fafb;
+      --green:#10b981;
+    }
+    * { box-sizing:border-box; margin:0; padding:0; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: #0a0f1e;
-      color: #ffffff;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
+      background:var(--bg); color:var(--text);
+      font-family:'Segoe UI',system-ui,sans-serif;
+      min-height:100vh; display:flex; flex-direction:column;
+      align-items:center; justify-content:center; padding:40px 20px;
     }
     .card {
-      background: #111827;
-      border: 1px solid #1e3a5f;
-      border-radius: 20px;
-      padding: 48px 36px;
-      max-width: 420px;
-      width: 100%;
-      text-align: center;
+      background:var(--surface); border:1px solid var(--border);
+      border-radius:16px; padding:40px 32px;
+      max-width:440px; width:100%; text-align:center;
     }
-    .logo {
-      width: 88px; height: 88px;
-      background: linear-gradient(135deg, #1d8cf8, #3358f4);
-      border-radius: 20px;
-      margin: 0 auto 28px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 40px;
-      box-shadow: 0 8px 32px rgba(29,140,248,.35);
-    }
-    h1 { font-size: 26px; font-weight: 800; margin-bottom: 12px; }
-    p  { color: #94a3b8; font-size: 15px; line-height: 1.7; margin-bottom: 32px; }
+    .icon { font-size:52px; margin-bottom:16px; }
+    h1 { font-size:26px; font-weight:800; color:var(--heading); margin-bottom:8px; }
+    .subtitle { color:#9ca3af; font-size:14px; margin-bottom:28px; }
     .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      background: linear-gradient(135deg, #1d8cf8, #3358f4);
-      color: #fff;
-      text-decoration: none;
-      padding: 16px 32px;
-      border-radius: 12px;
-      font-weight: 700;
-      font-size: 16px;
-      box-shadow: 0 4px 20px rgba(29,140,248,.4);
-      transition: transform .15s, box-shadow .15s;
+      display:flex; align-items:center; justify-content:center; gap:10px;
+      width:100%; background:var(--accent); color:#000;
+      font-weight:700; font-size:15px; padding:15px;
+      border-radius:10px; text-decoration:none; margin-bottom:12px;
+      transition:opacity 0.2s;
     }
-    .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(29,140,248,.5); }
-    .features {
-      display: flex;
-      gap: 12px;
-      margin-top: 32px;
-      justify-content: center;
-      flex-wrap: wrap;
+    .btn:hover { opacity:0.85; }
+    .btn.secondary {
+      background:transparent; border:1px solid var(--border);
+      color:var(--text);
     }
-    .feat {
-      background: #0d2137;
-      border: 1px solid #1e3a5f;
-      border-radius: 8px;
-      padding: 8px 14px;
-      font-size: 12px;
-      color: #64b5f6;
+    .badge {
+      display:inline-block; background:#1c2a1e; color:var(--green);
+      border:1px solid #166534; border-radius:20px;
+      padding:4px 14px; font-size:12px; font-weight:600;
+      margin-bottom:20px;
     }
+    .divider { border:none; border-top:1px solid var(--border); margin:20px 0; }
+    footer { margin-top:24px; font-size:12px; color:#4b5563; }
+
+    /* referral code box — shown only if code detected in URL */
+    .ref-box {
+      display:none; background:#1a2332; border:1px solid #2d4a6e;
+      border-radius:10px; padding:14px 16px; margin-bottom:20px;
+      font-size:13px; color:#93c5fd;
+    }
+    .ref-code { font-size:18px; font-weight:800; color:#60a5fa; letter-spacing:2px; }
   </style>
 </head>
 <body>
   <div class="card">
-    <div class="logo">📈</div>
+    <div class="icon">📈</div>
+    <span class="badge">✅ Live Forex Signals</span>
     <h1>Trading Insights</h1>
-    <p>Professional forex & crypto trading signals delivered in real-time. Download the app and start trading smarter today.</p>
-    <a class="btn" href="https://play.google.com/store/apps/details?id=com.premium.trading_insights.signals">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
-        <path d="M3 20.5v-17c0-.83 1-.88 1.4-.44l16 8.5-16 8.5C3.9 21.5 3 21.3 3 20.5z"/>
-      </svg>
-      Download on Play Store
-    </a>
-    <div class="features">
-      <span class="feat">📊 Live Signals</span>
-      <span class="feat">🔔 Push Alerts</span>
-      <span class="feat">🤖 EA Copy Trade</span>
-      <span class="feat">📈 MT5 Support</span>
+    <p class="subtitle">Professional forex signals, AI-powered analysis & expert tools — all in one app.</p>
+
+    <!-- Referral notice (shown by JS if ?ref= or /r/ detected) -->
+    <div class="ref-box" id="refBox">
+      🎁 Referral code: <span class="ref-code" id="refCode"></span><br/>
+      <small style="color:#9ca3af">Code will be applied automatically after install.</small>
     </div>
+
+    <a id="downloadBtn"
+       href="https://play.google.com/store/apps/details?id=com.premium.trading_insights.signals"
+       class="btn">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M3.18 23.76A2 2 0 0 1 2 22V2a2 2 0 0 1 1.18-1.81l11.63 11.57L3.18 23.76zm15.49-8.34L5.77 22.55l11.28-6.51 1.62-0.62zM21.5 11.14a2 2 0 0 1 0 1.72l-2.56 1.48-2.03-2.02 2.03-2.03 2.56 1.48-.0 -.63zm-4.59-2.7L5.77 1.45l12.9 7.13-1.76 1.86z"/>
+      </svg>
+      Download on Google Play
+    </a>
+    <hr class="divider"/>
+    <a href="./privacy-policy.html" class="btn secondary">🔒 Privacy Policy</a>
+    <a href="./terms.html" class="btn secondary">📋 Terms &amp; Conditions</a>
+    <hr class="divider"/>
+    <p style="font-size:13px">
+      Questions? Contact us at<br/>
+      <strong style="color:#f59e0b">support.trading.insights@gmail.com</strong>
+    </p>
   </div>
+  <footer>© 2026 Trading Insights</footer>
+
+  <script>
+    // ── Referral code detection ──────────────────────────────────────────────
+    // Handles old-format links that pointed to this GitHub Pages domain.
+    // New referral links go through the backend server directly, but users
+    // with the old app version may still share GitHub Pages links.
+    //
+    // Supported URL patterns:
+    //   ?ref=ABCD1234         (query param)
+    //   /link/r/ABCD1234      (old path format — served as 404 then redirected)
+    //
+    (function () {
+      var PLAY_BASE = 'https://play.google.com/store/apps/details?id=com.premium.trading_insights.signals';
+      var code = null;
+
+      // 1. Try query param: ?ref=CODE
+      var params = new URLSearchParams(window.location.search);
+      if (params.get('ref')) {
+        code = params.get('ref').trim().toUpperCase();
+      }
+
+      // 2. Try path: /link/r/CODE
+      if (!code) {
+        var segs = window.location.pathname.split('/').filter(Boolean);
+        var rIdx = segs.indexOf('r');
+        if (rIdx !== -1 && segs[rIdx + 1]) {
+          code = segs[rIdx + 1].trim().toUpperCase();
+        }
+      }
+
+      if (code && /^[A-Z0-9]{6,12}$/.test(code)) {
+        // Show referral box
+        document.getElementById('refCode').textContent = code;
+        document.getElementById('refBox').style.display = 'block';
+
+        // Update Play Store URL to include referrer param
+        var referrer = encodeURIComponent('ref=' + code);
+        var url = PLAY_BASE + '&referrer=' + referrer;
+        document.getElementById('downloadBtn').href = url;
+      }
+    })();
+  </script>
 </body>
 </html>
