@@ -1,129 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Trading Insights — Opening App...</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Redirecting — Trading Insights</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root { --bg:#0a0e1a; --text:#e5e7eb; --accent:#f59e0b; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: #0a0f1e;
-      color: #ffffff;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 20px;
+      background:var(--bg); color:var(--text);
+      font-family:'Segoe UI',system-ui,sans-serif;
+      min-height:100vh; display:flex; flex-direction:column;
+      align-items:center; justify-content:center; text-align:center;
+      padding:40px 20px;
     }
-    .card {
-      background: #111827;
-      border: 1px solid #1e3a5f;
-      border-radius: 16px;
-      padding: 40px 32px;
-      max-width: 380px;
-      width: 100%;
-    }
-    .logo {
-      width: 72px;
-      height: 72px;
-      background: linear-gradient(135deg, #1d8cf8, #3358f4);
-      border-radius: 16px;
-      margin: 0 auto 24px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 32px;
-    }
-    h1 { font-size: 22px; font-weight: 700; margin-bottom: 10px; }
-    p  { color: #94a3b8; font-size: 14px; line-height: 1.6; margin-bottom: 24px; }
-    .btn {
-      display: inline-block;
-      background: linear-gradient(135deg, #1d8cf8, #3358f4);
-      color: #fff;
-      text-decoration: none;
-      padding: 14px 28px;
-      border-radius: 10px;
-      font-weight: 600;
-      font-size: 15px;
-      transition: opacity .2s;
-    }
-    .btn:hover { opacity: .85; }
     .spinner {
-      width: 24px; height: 24px;
-      border: 3px solid #1e3a5f;
-      border-top-color: #1d8cf8;
-      border-radius: 50%;
-      animation: spin .8s linear infinite;
-      margin: 0 auto 16px;
+      width:48px; height:48px; border:4px solid #1f2937;
+      border-top:4px solid var(--accent); border-radius:50%;
+      animation:spin 0.8s linear infinite; margin:0 auto 24px;
     }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .ref-badge {
-      display: inline-block;
-      background: #0d2137;
-      border: 1px solid #1e3a5f;
-      border-radius: 6px;
-      padding: 4px 12px;
-      font-size: 12px;
-      color: #64b5f6;
-      margin-bottom: 20px;
-      font-family: monospace;
-      letter-spacing: 1px;
-    }
+    @keyframes spin { to { transform:rotate(360deg); } }
+    p { color:#9ca3af; font-size:14px; margin-top:12px; }
+    a { color:var(--accent); }
   </style>
 </head>
 <body>
-  <div class="card" id="card">
-    <div class="logo">📈</div>
-    <div class="spinner"></div>
-    <h1>Redirecting...</h1>
-    <p>Please wait while we open the app or redirect you to the Play Store.</p>
-  </div>
+  <div class="spinner"></div>
+  <h2 style="color:#f9fafb; font-size:20px;">Redirecting to Play Store…</h2>
+  <p id="msg">Opening Trading Insights on Google Play</p>
+  <p style="margin-top:24px; font-size:12px;">
+    Not redirecting? <a id="fallback" href="https://play.google.com/store/apps/details?id=com.premium.trading_insights.signals">Tap here</a>
+  </p>
 
   <script>
-    // ─── CONFIG ─────────────────────────────────────────────────────────────────
-    // ⚠️  YAHAN APNA PACKAGE NAME DAALEIN
-    var PACKAGE_NAME = 'com.premium.trading_insights.signals';
-    // ─────────────────────────────────────────────────────────────────────────────
-
+    // ── 404 Referral Redirect ────────────────────────────────────────────────
+    // This 404.html catches old referral link paths like:
+    //   https://supporttradinginsights-byte.github.io/link/r/ABCD1234
+    //
+    // GitHub Pages can't do server-side redirects, so any unmatched path
+    // lands here. We extract the referral code from the path and redirect
+    // to the Play Store with the correct &referrer= parameter so that
+    // Play Install Referrer API still delivers the code to the app.
+    // ────────────────────────────────────────────────────────────────────────
     (function () {
-      var path  = window.location.pathname;   // e.g. /repo-name/r/ABC123
-      var parts = path.split('/');
+      var PLAY_BASE = 'https://play.google.com/store/apps/details?id=com.premium.trading_insights.signals';
+      var code = null;
 
-      // Find "r" segment and grab code after it
-      // Works with or without a sub-path prefix (GitHub Pages repo name)
-      var rIdx  = parts.indexOf('r');
-      var code  = (rIdx >= 0 && parts[rIdx + 1]) ? parts[rIdx + 1].toUpperCase() : '';
-
-      // Validate: only A-Z 0-9, length 6-12 (same as backend)
-      var valid = /^[A-Z0-9]{6,12}$/.test(code);
-
-      if (valid) {
-        // Show referral badge
-        var badge = document.createElement('div');
-        badge.className = 'ref-badge';
-        badge.textContent = 'Referral: ' + code;
-        document.querySelector('p').insertAdjacentElement('beforebegin', badge);
+      // Extract code from path: /link/r/ABCD1234
+      var segs = window.location.pathname.split('/').filter(Boolean);
+      var rIdx = segs.indexOf('r');
+      if (rIdx !== -1 && segs[rIdx + 1]) {
+        var raw = segs[rIdx + 1].trim().toUpperCase();
+        if (/^[A-Z0-9]{6,12}$/.test(raw)) {
+          code = raw;
+        }
       }
 
-      // Build Play Store URL
-      var storeUrl = valid
-        ? 'https://play.google.com/store/apps/details?id=' +
-          encodeURIComponent(PACKAGE_NAME) +
-          '&referrer=' + encodeURIComponent('ref=' + code)
-        : 'https://play.google.com/store/apps/details?id=' +
-          encodeURIComponent(PACKAGE_NAME);
+      // Also check query param: ?ref=CODE
+      if (!code) {
+        var params = new URLSearchParams(window.location.search);
+        var qRef = params.get('ref');
+        if (qRef && /^[A-Z0-9]{6,12}$/.test(qRef.trim().toUpperCase())) {
+          code = qRef.trim().toUpperCase();
+        }
+      }
 
-      // Auto-redirect after 800ms (gives user time to see the page)
+      var redirectUrl;
+      if (code) {
+        var referrer = encodeURIComponent('ref=' + code);
+        redirectUrl = PLAY_BASE + '&referrer=' + referrer;
+        document.getElementById('msg').textContent =
+          'Applying referral code: ' + code;
+      } else {
+        redirectUrl = PLAY_BASE;
+      }
+
+      document.getElementById('fallback').href = redirectUrl;
+
+      // Redirect after a short delay so spinner is visible
       setTimeout(function () {
-        document.getElementById('card').innerHTML =
-          '<div class="logo">📈</div>' +
-          (valid ? '<div class="ref-badge">Referral: ' + code + '</div>' : '') +
-          '<h1>Opening Play Store</h1>' +
-          '<p>Tap the button below if you are not redirected automatically.</p>' +
-          '<a class="btn" href="' + storeUrl + '">Open Play Store</a>';
-        window.location.href = storeUrl;
+        window.location.replace(redirectUrl);
       }, 800);
     })();
   </script>
